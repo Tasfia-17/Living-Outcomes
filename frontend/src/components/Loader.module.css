@@ -1,0 +1,11 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+.skeleton {
+  height: 280px;
+  background: var(--color-bone);
+  border-radius: var(--radius-card);
+  border: 1px solid var(--color-vellum);
+}

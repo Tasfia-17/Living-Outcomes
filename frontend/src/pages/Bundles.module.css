@@ -1,0 +1,52 @@
+.page {
+  min-height: 100vh;
+  background: var(--color-putty);
+  padding: 100px 40px 80px;
+}
+
+.header {
+  margin-bottom: 32px;
+}
+
+.title {
+  font-family: var(--font-serif);
+  font-size: 52px;
+  font-weight: 400;
+  color: var(--color-ink);
+  letter-spacing: -0.47px;
+  line-height: 1;
+}
+
+.subtitle {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--color-graphite);
+  margin-top: 6px;
+}
+
+.explainer {
+  margin-bottom: 40px;
+  max-width: 560px;
+  padding: 20px 24px;
+  background: var(--color-bone);
+  border: 1px solid var(--color-vellum);
+  border-radius: var(--radius-card);
+}
+
+.explainerText {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--color-graphite);
+  line-height: 1.6;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+@media (max-width: 600px) {
+  .page { padding: 90px 20px 60px; }
+}
