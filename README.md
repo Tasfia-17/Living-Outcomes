@@ -1,36 +1,30 @@
 # Living Outcomes
 
-> A marketplace where AI-generated work keeps getting better over time -- and every contributor gets paid automatically, forever.
+An open protocol for AI-generated strategies that evolve over time, with every contributor earning automatically and permanently on-chain.
 
-Built for the **Mantle Turing Test Hackathon 2026** -- Track 6 (Agentic Wallets and Economy) + Track 3 (AI x RWA).
+Built for the **Mantle Turing Test Hackathon 2026** - Track 6 (Agentic Wallets and Economy) + Track 3 (AI x RWA).
 
 ---
 
 ## The Problem
 
-Every day, AI agents create incredible work -- trading strategies, audit reports, market analysis. But here is what happens:
+Every day, AI agents produce valuable work: trading strategies, audit reports, market analysis. The current model breaks this in four ways.
 
-You pay once. You get the output. That is it.
+**AI work is disposable.** You pay for a strategy. You receive the output. The transaction ends. The work has no future life, no improvement path, and no performance record.
 
-No ongoing life. No way to improve it. No way to track if it actually works. No way to combine it with other work. And if someone takes your work, improves it, and sells it for more -- you get nothing.
+**There is no incentive to share.** Because creators receive nothing when their work is reused or improved, they keep their best ideas private. Every team rebuilds from scratch. A developer spends 40 hours building a smart contract audit tool, sells it for $500, watches someone improve it and sell that version for $2,000, and receives nothing from the second sale.
 
-This is why the best AI work stays private. Why everyone rebuilds from scratch. Why innovation moves at 10% of its potential speed.
+**There is no performance truth.** When you acquire a strategy, you cannot verify whether it actually works. The creator says "12% APY." There is no on-chain record proving or disproving that claim. The strategy could have worked once in a backtest and fail continuously in real markets.
 
-Three concrete examples:
-
-**The Developer Problem.** A developer spends 40 hours building a smart contract audit tool. Sells it for $500. Someone improves it and sells the improved version for $2,000. The original developer gets $0.
-
-**The Waste Problem.** 100 DeFi protocols each spend $100,000 building similar risk models. Total waste: $10 million. No one shares because sharing pays nothing.
-
-**The Trust Problem.** A Twitter influencer sells a "guaranteed 20% APY" strategy for $1,000. 50 people buy it. The strategy loses money in week 1. The influencer disappears. Buyers have no recourse because there is no verifiable track record.
+**Combining work is practically impossible.** To assemble three strategies into a portfolio, you negotiate with three creators, manage three separate agreements, and coordinate three payment flows. Nobody does this. The best ideas stay isolated instead of compounding into something better.
 
 ---
 
-## What We Built
+## What Living Outcomes Is
 
-Living Outcomes is a marketplace where AI-generated work keeps getting better over time -- and every person who contributed gets paid automatically, forever.
+Living Outcomes is a protocol where AI-generated strategies are issued as on-chain assets, where every improvement fork pays the original creator automatically, where bundles split revenue among all contributors without negotiation, and where real performance is tracked and scored on-chain.
 
-Think of it as GitHub with automatic royalties -- or OutcomeX with a lifetime of earnings.
+Think of it as GitHub forks with automatic royalties, combined with an on-chain performance record that never stops updating.
 
 ---
 
@@ -40,36 +34,34 @@ Think of it as GitHub with automatic royalties -- or OutcomeX with a lifetime of
 
 Alice is a trader. She creates a strategy: "Buy mETH when RSI < 30, sell when RSI > 70."
 
-She uploads it to Living Outcomes. The system:
+She submits it to the protocol. The system:
 - Stores the strategy on-chain (Mantle)
-- Creates a digital certificate (NFT) proving Alice created it
+- Mints an NFT proving Alice created it, with configurable royalty terms
 - Sets the price: $50
 
-Alice earns $50 every time someone uses her strategy.
+Alice earns $50 every time someone acquires her strategy.
 
 ### Step 2: Improve
 
-Bob sees Alice's strategy. He thinks: "Good, but it doesn't account for EigenLayer slashing risk."
+Bob examines Alice's strategy. He identifies a gap: it does not account for EigenLayer slashing risk.
 
 Bob creates an improved version: "Buy mETH when RSI < 30 AND slashing probability < 5%, sell when RSI > 70."
 
-He uploads it as a "child" of Alice's original. The system automatically:
-- Links Bob's version to Alice's original (like a GitHub fork)
+He registers it as a child of Alice's original. The protocol automatically:
+- Links Bob's version to Alice's original (a verifiable on-chain fork)
 - Sets Bob's price: $80
-- Sends Alice 15% ($12) every time Bob's version sells
+- Routes 15% ($12) of every Bob sale to Alice
 
-Alice earns $12 every time Bob's version sells -- even though she did no new work. Bob earns $68. Buyers get a better strategy. Everyone wins.
+Alice earns $12 every time Bob's version is acquired, without any further work. Bob earns $68. Buyers receive a stronger strategy. The protocol enforces all of this without intermediaries.
 
 ### Step 3: Combine
 
-Charlie is a portfolio manager. He wants a bundle:
+Charlie is a portfolio manager. He wants to assemble three strategies into a single product:
 - Alice's original momentum strategy
 - Bob's improved version with slashing protection
 - Dave's volatility hedge strategy
 
-Charlie creates "Mantle Alpha Bundle" and sells it for $200.
-
-The system automatically splits the money:
+Charlie registers a bundle at $200. The protocol distributes revenue automatically on every sale:
 
 | Contributor | Share | Amount |
 |---|---|---|
@@ -78,11 +70,11 @@ The system automatically splits the money:
 | Dave | 10% | $20 |
 | Charlie (assembler) | 70% | $140 |
 
-No negotiation. No invoices. All automatic.
+No invoices. No negotiation. No trust required between parties.
 
 ### Step 4: Self-Improve
 
-The system watches how each strategy performs in the real market -- not backtests, not simulations, but actual execution on Mantle DeFi protocols.
+The protocol continuously tracks how each strategy performs against real Mantle DeFi protocols, not simulations or backtests.
 
 | Strategy | Return | Drawdown |
 |---|---|---|
@@ -90,25 +82,23 @@ The system watches how each strategy performs in the real market -- not backtest
 | Bob's improved | 15% | 5% |
 | Dave's hedge | 18% | 3% |
 
-The system automatically:
-- Ranks strategies by performance
-- Suggests improvements: "Bob's version performs 25% better -- consider adding slashing protection"
-- Adjusts prices: Bob's version goes from $80 to $100 (market demand)
-- Rebalances bundles: "Mantle Alpha Bundle" now weights Dave's strategy higher
-
-Like having a stock analyst who never sleeps.
+Based on verified on-chain performance, the system:
+- Updates rankings automatically
+- Surfaces improvement suggestions: "Bob's version outperforms Alice's by 25% - consider adding slashing protection"
+- Adjusts pricing signals based on demand and performance
+- Rebalances bundle weightings to reflect current performance data
 
 ---
 
-## Why This Only Works on Mantle
+## Why Mantle
 
 | Feature | Why It Matters |
 |---|---|
-| Low gas ($0.01) | Ethereum ($5+) makes frequent royalty updates impossible. We update prices, rankings, and royalties daily. |
-| ERC-8004 identity | Every creator is a verified AI agent. No fake accounts. No stolen work. Reputation is real. |
-| Byreal Skills CLI | Strategies don't just sit in a PDF -- they execute automatically against real DeFi protocols. |
-| x402 payments | Micropayments for every strategy use, every improvement, every bundle sale -- all automatic. |
-| $4B+ treasury | Institutional credibility. Real-world asset focus. This isn't a toy -- it is a financial product. |
+| Low gas ($0.01) | Ethereum gas ($5+) makes daily royalty updates, price adjustments, and performance snapshots economically unviable. This only works at sub-cent transaction costs. |
+| ERC-8004 agent identity | Every creator is a verified AI agent with an on-chain identity. Reputation is permanent and unforgeable. |
+| Byreal Skills CLI | Strategies execute automatically against live DeFi protocols. Performance data is real, not simulated. |
+| x402 micropayments | Every strategy acquisition, improvement royalty, and bundle revenue split flows automatically without manual settlement. |
+| $4B+ community treasury | Institutional credibility and real-world asset infrastructure. This is a financial product, not a demo. |
 
 ---
 
@@ -117,27 +107,27 @@ Like having a stock analyst who never sleeps.
 ```
 +------------------------------------------+
 |  LAYER 5: USER INTERFACE                 |
-|  - Marketplace (browse, search, filter)  |
-|  - Creator dashboard (upload, earnings)  |
-|  - Performance dashboard (real data)     |
-|  - Bundle builder (drag and drop)        |
+|  - Strategy browser (search, filter)     |
+|  - Creator dashboard (submit, earnings)  |
+|  - Performance dashboard (live data)     |
+|  - Bundle builder (compose, price)       |
 |  - Improvement suggestions               |
 +------------------------------------------+
                     |
 +------------------------------------------+
 |  LAYER 4: ORCHESTRATION                  |
 |  - Request routing                       |
-|  - Strategy ranking                      |
-|  - Improvement suggestions               |
-|  - Execution routing                     |
+|  - Strategy ranking engine               |
+|  - Improvement signal generation         |
+|  - Execution routing to Byreal           |
 |  - Outcome tracking                      |
 +------------------------------------------+
                     |
 +------------------------------------------+
 |  LAYER 3: FINANCIAL                      |
-|  - Strategy creation (mint NFT)          |
-|  - Strategy sale (auto-payment)          |
-|  - Improvement royalties (auto-split)    |
+|  - Strategy issuance (mint NFT)          |
+|  - Acquisition payment (auto-split)      |
+|  - Fork royalties (auto-route)           |
 |  - Bundle revenue (auto-distribute)      |
 |  - Performance bonuses                   |
 +------------------------------------------+
@@ -148,44 +138,46 @@ Like having a stock analyst who never sleeps.
 |  - Performance oracle (Nansen + Bybit)   |
 |  - Reputation scoring (ERC-8004)         |
 |  - Fraud detection                       |
-|  - Audit trail (Mantle blockchain)       |
+|  - Permanent audit trail (Mantle)        |
 +------------------------------------------+
                     |
 +------------------------------------------+
 |  LAYER 1: INFRASTRUCTURE                 |
-|  - Mantle Network (low gas)              |
-|  - ERC-8004 (agent identity)             |
-|  - Byreal Skills CLI (execution)         |
-|  - x402 (micropayments)                  |
-|  - DeFi Protocols (real markets)         |
+|  - Mantle Network (low-cost execution)   |
+|  - ERC-8004 (agent identity registry)    |
+|  - Byreal Skills CLI (live execution)    |
+|  - x402 (automatic micropayments)        |
+|  - Mantle DeFi Protocols (real markets)  |
 +------------------------------------------+
 ```
 
-### Code Structure
+---
+
+## Code Structure
 
 ```
 living-outcomes/
   contracts/        Solidity smart contracts (Foundry)
     src/
-      StrategyNFT.sol         ERC-721 + ERC-2981 strategy ownership with forking and royalties
-      StrategyMarketplace.sol Fixed-price listings, enforces royalty splits on every sale
-      BundleRegistry.sol      Assembles strategy sets, splits revenue automatically
-      PerformanceOracle.sol   Records snapshots, computes EWA score on-chain
+      StrategyNFT.sol         ERC-721 + ERC-2981 ownership with fork chains and royalties
+      StrategyMarketplace.sol Fixed-price acquisition, royalty splits enforced on every sale
+      BundleRegistry.sol      Registers strategy sets, distributes revenue automatically
+      PerformanceOracle.sol   Records performance snapshots, computes EWA score on-chain
       AgentRegistry.sol       Maps wallet to agent identity (ERC-8004 compatible)
     test/
       LivingOutcomes.t.sol    17 tests, all passing
     script/
-      Deploy.s.sol            Deploy all contracts in sequence
+      Deploy.s.sol            Deploys all contracts in sequence
 
   backend/          Python FastAPI server
     app/
       main.py                 App factory, router registration
       config.py               Pydantic settings from .env
-      chain.py                web3.py wrapper (call + send)
-      dependencies.py         FastAPI DI -- service construction
-      models/domain.py        Pure Python dataclasses (no ORM)
+      chain.py                web3.py call and send wrapper
+      dependencies.py         FastAPI dependency injection
+      models/domain.py        Pure Python dataclasses, no ORM
       services/
-        strategy.py           Reads StrategyNFT + PerformanceOracle
+        strategy.py           Reads StrategyNFT and PerformanceOracle
         bundle.py             Reads BundleRegistry
         leaderboard.py        Ranks strategies by EWA score
       routes/
@@ -193,73 +185,71 @@ living-outcomes/
         bundles.py            GET /api/v1/bundles/
         leaderboard.py        GET /api/v1/leaderboard/
         health.py             GET /health
-      abis/                   Extracted ABIs from Foundry build output
+      abis/                   ABIs extracted from Foundry build output
     tests/
       test_backend.py         10 tests, all passing (chain fully mocked)
 
   frontend/         React + Vite
     src/
-      App.jsx                 Router + animated page transitions
+      App.jsx                 Router with animated page transitions
       pages/
-        Landing.jsx           Hero, gallery, how-it-works, CTA
+        Landing.jsx           Hero, feature gallery, how-it-works, CTA
         Strategies.jsx        Sortable strategy grid
-        StrategyDetail.jsx    Detail + animated SVG performance chart
+        StrategyDetail.jsx    Detail view with animated performance chart
         Bundles.jsx           Bundle grid
-        BundleDetail.jsx      Detail + animated revenue split bar
-        Leaderboard.jsx       Dark room ranked table with animated bars
+        BundleDetail.jsx      Detail view with animated revenue split bar
+        Leaderboard.jsx       Ranked table with animated score bars
       components/
         Nav.jsx               Minimal fixed header
-        StrategyCard.jsx      Score bar, tier styling, fork indicator
-        BundleCard.jsx        Dark card, strategy tag links
-        Loader.jsx            Skeleton animation
+        StrategyCard.jsx      Score bar, tier styling, fork lineage indicator
+        BundleCard.jsx        Dark card with constituent strategy links
+        Loader.jsx            Skeleton loading animation
       lib/
-        api.js                Fetch wrapper for backend
-        useApi.js             Data fetching hook
-        mockData.js           Development mock data (no backend needed)
+        api.js                Fetch wrapper for backend API
+        useApi.js             Data fetching hook with cancel support
+        mockData.js           Dev mock data, no backend required
 ```
 
 ---
 
 ## Sponsor Integration
 
-We didn't just build a project. We built a project that uses every major sponsor deeply.
-
 | Sponsor | How We Use Them | Why They Care |
 |---|---|---|
-| **Bybit** | Price data for performance benchmarking; execution API for trading strategies; white-label for 30M+ users | Post-$1.4B hack, they need verified, on-chain performance tracking |
-| **Byreal** | Execution engine (Byreal Skills CLI); agent identity framework; Emily Bao (judge) understands our architecture | We bring buyers to their execution infrastructure |
-| **BGA** | Public verifiability; democratized access ($50-200 vs hedge fund $50K); fair creator compensation | Real-world example of blockchain for economic fairness |
-| **Tencent Cloud** | GPU instances for backtesting; AI model hosting; enterprise distribution to TradFi clients | Compelling Web3 use case for their cloud services |
-| **Mirana Ventures** | Drive mETH/cmETH usage; investable marketplace ($100K+ monthly volume); deal flow from quant creators | We grow Mantle's ecosystem and create investable businesses |
-| **Nansen** | Verify performance claims; smart money signals for strategy building; institutional sales channel | New use case for their data (strategy verification) |
-| **Elfa AI** | Sentiment-based strategies; social monitoring for strategy quality; viral detection for pricing | New distribution channel for their sentiment data |
-| **Surf / Orbit / Z.ai** | Host AI models (LSTM, NLP); agent framework integration; compute cost optimization | Customers who need AI inference at scale |
-| **Animoca Minds** | Gamification (leaderboards, badges, NFTs); strategy-as-NFT design; consumer app interfaces | New category of composable, improvable digital assets |
-| **DoraHacks** | Developer onboarding pipeline; hackathon project distribution; grant recipient monetization | Monetization layer for their hackathon ecosystem |
-| **Virtuals Protocol** | Agent-to-agent payment coordination; multi-agent strategy collaboration; reputation system integration | Real-world agent economy use case |
-| **Caladan** | Strategy quality review; risk assessment frameworks; institutional buyer network; market making | Marketplace for their quant expertise |
-| **Hashed** | Series A investment target; Korean market access; protocol connections; governance advocacy | High-growth marketplace with network effects |
+| **Bybit** | Price data for performance benchmarking; execution API for live strategy runs; white-label distribution to 30M+ users | Post-$1.4B hack, Bybit needs verified on-chain performance records |
+| **Byreal** | Execution engine via Byreal Skills CLI; agent identity framework | We route strategy execution through their infrastructure |
+| **BGA** | Public performance verifiability; access to quant strategies at $50-200 instead of hedge fund minimums; permanent creator attribution | Concrete example of blockchain enabling economic fairness |
+| **Tencent Cloud** | GPU instances for backtesting pipelines; AI model hosting for LSTM and NLP inference | Web3-native workload for their cloud infrastructure |
+| **Mirana Ventures** | mETH and cmETH usage growth; investable protocol at scale | Protocol that deepens Mantle ecosystem liquidity |
+| **Nansen** | On-chain data feeds for performance verification; smart money signals as strategy inputs | New product category: verified strategy performance as a data layer |
+| **Elfa AI** | Social sentiment feed for sentiment-driven strategies; social signal monitoring for quality detection | New distribution channel for their intelligence product |
+| **Surf / Orbit / Z.ai** | AI model hosting; agent framework integration for execution | Customers who need inference at consistent scale |
+| **Animoca Minds** | Gamified performance leaderboards; strategy NFT design principles; consumer interfaces | New category of composable, improvable digital assets |
+| **DoraHacks** | Developer onboarding pipeline; monetization path for hackathon submissions | Gives hackathon projects a revenue layer beyond the event |
+| **Virtuals Protocol** | Agent-to-agent payment coordination; multi-agent collaboration protocols; cross-platform reputation | Production use case for their agent economy primitives |
+| **Caladan** | Strategy quality review framework; institutional risk assessment standards; quant buyer network | Channel for their quant expertise beyond proprietary trading |
+| **Hashed** | Investment track; Korean quant developer community; governance participation | High-growth protocol with compounding network effects |
 
 ---
 
 ## Economics
 
-**Strategy sale:**
-- Seller net = price minus platform fee minus parent royalty
-- Parent royalty: configurable per fork (default 10% of price to original creator)
+**Strategy acquisition:**
+- Seller receives: price minus platform fee minus parent royalty
+- Fork royalty: configurable per strategy (default 10% to original creator on every downstream sale)
 - Platform fee: 10 basis points
 
-**Bundle sale:**
-- Assembler: 70% of revenue
-- Each constituent strategy: 30% divided by N strategies
+**Bundle acquisition:**
+- Assembler receives: 70% of revenue
+- Each constituent strategy receives: 30% divided evenly across included strategies
 
-**Performance scoring (EWA -- Exponentially Weighted Average):**
-- Computed on-chain from reporter-submitted snapshots
-- Older snapshots carry higher weight -- rewards consistent performance over lucky spikes
-- Score updates trigger automatic price and ranking adjustments
+**Performance scoring:**
+- EWA (Exponentially Weighted Average) computed on-chain from reporter-submitted snapshots
+- Older snapshots carry higher weight, rewarding consistent performance over single lucky results
+- Score updates feed back into rankings and pricing signals automatically
 
-**Transfer guard:**
-- Strategy NFT cannot be transferred while listed for sale (safe ownership semantics)
+**Ownership safety:**
+- A strategy NFT cannot be transferred while it has an active listing
 
 ---
 
@@ -269,7 +259,8 @@ We didn't just build a project. We built a project that uses every major sponsor
 
 ```bash
 cd contracts
-forge test -vv          # 17/17 tests pass
+forge test -vv
+# 17/17 tests pass
 forge script script/Deploy.s.sol --broadcast --rpc-url <RPC_URL>
 ```
 
@@ -280,40 +271,41 @@ cd backend
 cp .env.example .env    # fill in contract addresses after deploy
 pip install -e ".[dev]"
 uvicorn app.main:app --reload
-python -m pytest tests/ -v   # 10/10 tests pass
+python -m pytest tests/ -v
+# 10/10 tests pass
 ```
 
 ### Frontend
 
 ```bash
 cd frontend
-cp .env.example .env    # VITE_USE_MOCK=true by default
+cp .env.example .env    # VITE_USE_MOCK=true by default, no backend needed
 npm install
-npm run dev             # runs on http://localhost:5173
+npm run dev             # http://localhost:5173
 ```
 
-Set `VITE_USE_MOCK=false` and configure `VITE_API_URL` to connect to a live backend.
+Set `VITE_USE_MOCK=false` and set `VITE_API_URL` to connect to a running backend.
 
 ### API Reference
 
 | Method | Route | Description |
 |---|---|---|
 | GET | `/api/v1/strategies/` | List all active strategies |
-| GET | `/api/v1/strategies/{id}` | Single strategy with EWA score |
-| GET | `/api/v1/strategies/{id}/snapshots` | Performance snapshot history |
-| POST | `/api/v1/strategies/{id}/snapshots` | Submit snapshot (reporter key required) |
+| GET | `/api/v1/strategies/{id}` | Single strategy with current EWA score |
+| GET | `/api/v1/strategies/{id}/snapshots` | Full performance snapshot history |
+| POST | `/api/v1/strategies/{id}/snapshots` | Submit a new snapshot (reporter key required) |
 | GET | `/api/v1/bundles/` | List all active bundles |
-| GET | `/api/v1/bundles/{id}` | Single bundle with constituent strategies |
-| GET | `/api/v1/leaderboard/?limit=20` | Ranked strategies by EWA score |
-| GET | `/health` | Chain connectivity check |
+| GET | `/api/v1/bundles/{id}` | Single bundle with constituent strategy list |
+| GET | `/api/v1/leaderboard/?limit=20` | Strategies ranked by EWA score |
+| GET | `/health` | Chain connectivity status |
 
 ---
 
-## Design
+## Frontend Design
 
-The frontend uses a Renaissance gallery aesthetic -- warm putty-beige canvas, stark black sections, classical painting imagery, serif display typography. Every animation is purposeful: score bars fill on scroll, performance charts draw in on load, leaderboard rows cascade in with staggered delays.
+The interface uses a Renaissance gallery aesthetic: warm putty-beige canvas, stark black sections, classical painting imagery, and serif display typography up to 280px. Animations are data-driven: score bars animate on scroll, performance charts draw in on load, leaderboard rows cascade with staggered delays.
 
-No gradients. No shadows. No modern illustrations. Depth comes from alternating light and dark full-bleed sections.
+No gradients. No shadows. No modern stock imagery. Visual depth comes entirely from alternating light and dark full-bleed sections.
 
 ---
 
