@@ -1,105 +1,92 @@
-import { motion, AnimatePresence } from 'framer-motion';
-import { Link } from 'react-router-dom';
-import { api } from '../lib/api';
-import { useApi } from '../lib/useApi';
-import { MOCK_LEADERBOARD } from '../lib/mockData';
-import styles from './Leaderboard.module.css';
+import { useState } from 'react'
+import { Link } from 'react-router-dom'
+import { api } from '../lib/api'
+import { useApi } from '../lib/useApi'
+import { MOCK_LEADERBOARD } from '../lib/mockData'
 
-const USE_MOCK = import.meta.env.VITE_USE_MOCK === 'true';
+const USE_MOCK = import.meta.env.VITE_USE_MOCK === 'true'
 
-function shortAddr(addr) { return addr ? `${addr.slice(0, 6)}…${addr.slice(-4)}` : '—'; }
-
-function RankRow({ entry, maxScore, index }) {
-  const pct = maxScore > 0 ? (entry.score_bps / maxScore) * 100 : 0;
-  const medal = index === 0 ? '◆' : index === 1 ? '◇' : index === 2 ? '△' : null;
-
-  return (
-    <motion.div
-      className={`${styles.row} ${index < 3 ? styles[`top${index + 1}`] : ''}`}
-      initial={{ opacity: 0, x: -30 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.5, delay: index * 0.06, ease: [0.16, 1, 0.3, 1] }}
-    >
-      <span className={styles.rankNum}>
-        {medal ? <span className={styles.medal}>{medal}</span> : entry.rank}
-      </span>
-
-      <div className={styles.barCell}>
-        <motion.div
-          className={styles.bar}
-          initial={{ width: 0 }}
-          animate={{ width: `${pct}%` }}
-          transition={{ duration: 0.8, delay: 0.4 + index * 0.06, ease: 'easeOut' }}
-        />
-      </div>
-
-      <span className={styles.creator}>{shortAddr(entry.strategy.creator)}</span>
-      <span className={styles.score}>{(entry.score_bps / 100).toFixed(2)}%</span>
-      <span className={styles.snapshots}>{entry.strategy.snapshot_count} snaps</span>
-      <Link to={`/strategies/${entry.strategy.token_id}`} className={styles.viewLink}>
-        #{entry.strategy.token_id} →
-      </Link>
-    </motion.div>
-  );
-}
+function shortAddr(a) { return a ? `${a.slice(0, 6)}…${a.slice(-4)}` : '—' }
 
 export default function Leaderboard() {
   const { data, loading } = useApi(() =>
     USE_MOCK ? Promise.resolve(MOCK_LEADERBOARD) : api.leaderboard(20)
-  );
+  )
 
-  const maxScore = data ? Math.max(...data.map(e => e.score_bps)) : 1;
+  const maxScore = data ? Math.max(...data.map(e => e.score_bps)) : 1
 
   return (
-    <div className={styles.page}>
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className={styles.headerWrap}
-      >
-        <div className={styles.header}>
-          <div>
-            <h1 className={styles.title}>Leaderboard</h1>
-            <p className={styles.subtitle}>Ranked by on-chain EWA performance score</p>
-          </div>
-          {data?.[0] && (
-            <div className={styles.topCard}>
-              <span className={styles.topLabel}>Top Performer</span>
-              <span className={styles.topScore}>{(data[0].score_bps / 100).toFixed(1)}%</span>
-              <span className={styles.topCreator}>{shortAddr(data[0].strategy.creator)}</span>
+    <main style={{ maxWidth: 1200, margin: '0 auto', padding: '48px 32px' }}>
+      <div className="label" style={{ marginBottom: 12 }}>Performance Registry</div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 32 }}>
+        <div>
+          <h1 className="subheading" style={{ marginBottom: 6 }}>Leaderboard</h1>
+          <span style={{ color: 'var(--color-mid-gray-border)', fontSize: 13 }}>
+            Ranked by on-chain EWA score
+          </span>
+        </div>
+        {data?.[0] && (
+          <div style={{ textAlign: 'right' }}>
+            <div style={{ fontFamily: 'var(--font-pt-serif)', fontSize: 40, color: 'var(--color-lime-interface)', lineHeight: 1 }}>
+              {(data[0].score_bps / 100).toFixed(1)}%
             </div>
-          )}
-        </div>
-      </motion.div>
+            <div className="label" style={{ marginTop: 4 }}>Top score · Strategy #{data[0].strategy.token_id}</div>
+          </div>
+        )}
+      </div>
 
-      <div className={styles.tableWrap}>
-        <div className={styles.tableHeader}>
-          <span>#</span>
-          <span>Performance</span>
-          <span>Creator</span>
-          <span>Score</span>
-          <span>Snapshots</span>
-          <span></span>
-        </div>
-        <AnimatePresence>
-          {loading && (
-            <motion.div className={styles.loadingRows} exit={{ opacity: 0 }}>
-              {[...Array(6)].map((_, i) => (
-                <motion.div
-                  key={i}
-                  className={styles.skelRow}
-                  animate={{ opacity: [0.4, 0.7, 0.4] }}
-                  transition={{ duration: 1.4, repeat: Infinity, delay: i * 0.1 }}
-                />
-              ))}
-            </motion.div>
-          )}
-        </AnimatePresence>
-        {data?.map((entry, i) => (
-          <RankRow key={entry.strategy.token_id} entry={entry} maxScore={maxScore} index={i} />
+      {/* Column headers */}
+      <div style={{
+        display: 'grid', gridTemplateColumns: '48px 1fr 180px 140px 100px 80px 80px',
+        gap: 16, padding: '10px 20px',
+        background: 'var(--surface-subtle-panel)',
+        borderBottom: '1px solid var(--color-dark-grid)',
+      }}>
+        {['RANK', 'PERFORMANCE', 'CREATOR', 'SCORE', 'PRICE', 'SNAPS', ''].map(h => (
+          <span key={h} className="label" style={{ fontSize: 10 }}>{h}</span>
         ))}
       </div>
-    </div>
-  );
+
+      {loading && (
+        [...Array(6)].map((_, i) => (
+          <div key={i} style={{ height: 52, background: 'var(--surface-dark-card)', borderBottom: '1px solid var(--color-dark-grid)' }} />
+        ))
+      )}
+
+      {data?.map((entry, i) => {
+        const pct = maxScore > 0 ? (entry.score_bps / maxScore) * 100 : 0
+        return (
+          <div key={entry.strategy.token_id} className="fade-up" style={{
+            display: 'grid', gridTemplateColumns: '48px 1fr 180px 140px 100px 80px 80px',
+            gap: 16, padding: '14px 20px', alignItems: 'center',
+            borderBottom: '1px solid var(--color-dark-grid)',
+            background: i === 0 ? 'rgba(197,255,74,0.04)' : i === 1 ? 'rgba(197,255,74,0.02)' : 'transparent',
+            transition: 'background 0.15s',
+          }}>
+            <span style={{ fontFamily: 'var(--font-jetbrains)', fontSize: 13, color: i < 3 ? 'var(--color-lime-interface)' : 'var(--color-mid-gray-border)' }}>
+              #{entry.rank}
+            </span>
+            <div style={{ height: 2, background: 'var(--color-dark-grid)', position: 'relative' }}>
+              <div style={{ position: 'absolute', left: 0, top: 0, height: '100%', width: `${pct}%`, background: 'var(--color-lime-interface)' }} />
+            </div>
+            <span style={{ fontFamily: 'var(--font-jetbrains)', fontSize: 11, color: 'var(--color-white-outlined-text)' }}>
+              {shortAddr(entry.strategy.creator)}
+            </span>
+            <span style={{ fontFamily: 'var(--font-pt-serif)', fontSize: 18, color: 'var(--color-lime-interface)' }}>
+              {(entry.score_bps / 100).toFixed(2)}%
+            </span>
+            <span style={{ fontFamily: 'var(--font-jetbrains)', fontSize: 11, color: 'var(--color-mid-gray-border)' }}>
+              {(Number(entry.strategy.price_wei) / 1e18).toFixed(2)} ETH
+            </span>
+            <span style={{ fontFamily: 'var(--font-jetbrains)', fontSize: 11, color: 'var(--color-mid-gray-border)', textAlign: 'center' }}>
+              {entry.strategy.snapshot_count}
+            </span>
+            <Link to={`/strategies/${entry.strategy.token_id}`} style={{ color: 'var(--color-lime-interface)', fontFamily: 'var(--font-jetbrains)', fontSize: 11, textDecoration: 'none', textAlign: 'right' }}>
+              #{entry.strategy.token_id} →
+            </Link>
+          </div>
+        )
+      })}
+    </main>
+  )
 }

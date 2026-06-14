@@ -1,28 +1,48 @@
-import { Link, useLocation } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import styles from './Nav.module.css';
+import { Link, useLocation } from 'react-router-dom'
+
+const links = [
+  { to: '/',            label: 'Home' },
+  { to: '/strategies',  label: 'Strategies' },
+  { to: '/bundles',     label: 'Bundles' },
+  { to: '/leaderboard', label: 'Leaderboard' },
+]
 
 export default function Nav() {
-  const { pathname } = useLocation();
-
+  const { pathname } = useLocation()
   return (
-    <motion.header
-      className={styles.header}
-      initial={{ opacity: 0, y: -16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-    >
-      <Link to="/" className={styles.logo} aria-label="Living Outcomes">
-        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-          <circle cx="16" cy="16" r="15" stroke="currentColor" strokeWidth="1.5"/>
-          <text x="16" y="21" textAnchor="middle" fontFamily="var(--font-serif)" fontSize="16" fontWeight="500" fill="currentColor">L</text>
-        </svg>
+    <nav style={{
+      background: 'var(--surface-subtle-panel)',
+      borderBottom: '1px solid var(--color-dark-grid)',
+      padding: '0 32px',
+      display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+      height: 52, position: 'sticky', top: 0, zIndex: 100,
+    }}>
+      <Link to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 10 }}>
+        <span style={{ color: 'var(--color-lime-interface)', fontFamily: 'var(--font-jetbrains)', fontSize: 13, fontWeight: 600, letterSpacing: '0.08em' }}>
+          LIVING OUTCOMES
+        </span>
+        <span style={{ color: 'var(--color-faint-grid)', fontFamily: 'var(--font-jetbrains)', fontSize: 10 }}>NEXUS</span>
       </Link>
-      <nav className={styles.nav}>
-        <Link to="/strategies" className={`${styles.link} ${pathname.startsWith('/strategies') ? styles.active : ''}`}>Strategies</Link>
-        <Link to="/bundles" className={`${styles.link} ${pathname.startsWith('/bundles') ? styles.active : ''}`}>Bundles</Link>
-        <Link to="/leaderboard" className={`${styles.link} ${pathname.startsWith('/leaderboard') ? styles.active : ''}`}>Leaderboard</Link>
-      </nav>
-    </motion.header>
-  );
+
+      <div style={{ display: 'flex', gap: 28, alignItems: 'center' }}>
+        {links.map(({ to, label }) => (
+          <Link key={to} to={to} style={{
+            textDecoration: 'none',
+            fontFamily: 'var(--font-inter-tight)',
+            fontSize: 13,
+            fontWeight: 400,
+            color: pathname === to ? 'var(--color-silver-whisper)' : 'var(--color-mid-gray-border)',
+            borderBottom: pathname === to ? '1.5px solid var(--color-lime-interface)' : '1.5px solid transparent',
+            paddingBottom: 2,
+            transition: 'color 0.2s',
+          }}>
+            {label}
+          </Link>
+        ))}
+        <Link to="/strategies" className="btn-lime" style={{ padding: '8px 16px', fontSize: 12 }}>
+          Explore →
+        </Link>
+      </div>
+    </nav>
+  )
 }

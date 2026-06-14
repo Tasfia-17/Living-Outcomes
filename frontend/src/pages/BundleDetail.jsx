@@ -1,116 +1,116 @@
-import { useParams, Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { api } from '../lib/api';
-import { useApi } from '../lib/useApi';
-import { MOCK_BUNDLES, MOCK_STRATEGIES } from '../lib/mockData';
-import StrategyCard from '../components/StrategyCard';
-import styles from './BundleDetail.module.css';
+import { useParams, Link } from 'react-router-dom'
+import { api } from '../lib/api'
+import { useApi } from '../lib/useApi'
+import { MOCK_BUNDLES, MOCK_STRATEGIES } from '../lib/mockData'
 
-const USE_MOCK = import.meta.env.VITE_USE_MOCK === 'true';
+const USE_MOCK = import.meta.env.VITE_USE_MOCK === 'true'
 
-function shortAddr(a) { return a ? `${a.slice(0,8)}…${a.slice(-6)}` : '—'; }
+function shortAddr(a) { return a ? `${a.slice(0, 10)}…${a.slice(-6)}` : '—' }
 
 export default function BundleDetail() {
-  const { id } = useParams();
-
+  const { id } = useParams()
   const { data: bundle, loading } = useApi(
     () => USE_MOCK
       ? Promise.resolve(MOCK_BUNDLES.find(b => b.bundle_id === Number(id)))
       : api.bundle(id),
     [id]
-  );
+  )
+
+  if (loading) return (
+    <main style={{ maxWidth: 800, margin: '0 auto', padding: '48px 32px' }}>
+      <div className="label">Loading…</div>
+    </main>
+  )
+  if (!bundle) return (
+    <main style={{ maxWidth: 800, margin: '0 auto', padding: '48px 32px' }}>
+      <div style={{ color: '#ff6b6b', fontFamily: 'var(--font-jetbrains)', fontSize: 12 }}>BUNDLE NOT FOUND</div>
+    </main>
+  )
 
   const strategies = USE_MOCK
-    ? MOCK_STRATEGIES.filter(s => bundle?.strategy_ids?.includes(s.token_id))
-    : [];
-
-  if (loading) return <div className={styles.page}><p className={styles.msg}>Loading…</p></div>;
-  if (!bundle) return <div className={styles.page}><p className={styles.msg}>Bundle not found.</p></div>;
-
-  const totalEth = (Number(bundle.price_wei) / 1e18).toFixed(4);
-  const n = bundle.strategy_ids.length;
-  // Revenue split: 70% assembler, 30% split among strategies
-  const assemblerPct = 70;
-  const eachPct = n > 0 ? (30 / n).toFixed(1) : 0;
+    ? MOCK_STRATEGIES.filter(s => bundle.strategy_ids.includes(s.token_id))
+    : []
+  const n = bundle.strategy_ids.length
+  const assemblerPct = 70
+  const eachPct = n > 0 ? (30 / n).toFixed(1) : 0
 
   return (
-    <div className={styles.page}>
-      <motion.div
-        className={styles.inner}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5 }}
-      >
-        <Link to="/bundles" className={styles.back}>← Bundles</Link>
+    <main style={{ maxWidth: 800, margin: '0 auto', padding: '48px 32px' }}>
+      <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 24 }}>
+        <Link to="/bundles" style={{ color: 'var(--color-mid-gray-border)', fontFamily: 'var(--font-jetbrains)', fontSize: 11, textDecoration: 'none' }}>BUNDLES</Link>
+        <span style={{ color: 'var(--color-faint-grid)', fontSize: 11 }}>/</span>
+        <span style={{ color: 'var(--color-lime-interface)', fontFamily: 'var(--font-jetbrains)', fontSize: 11 }}>#{bundle.bundle_id}</span>
+      </div>
 
-        <div className={styles.topRow}>
-          <div>
-            <h1 className={styles.title}>Bundle #{bundle.bundle_id}</h1>
-            <p className={styles.assembler}>Assembled by {shortAddr(bundle.assembler)}</p>
+      <div className="label" style={{ marginBottom: 12 }}>Bundle Registry</div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 32 }}>
+        <div>
+          <h1 className="subheading" style={{ marginBottom: 6 }}>Bundle #{bundle.bundle_id}</h1>
+          <span style={{ color: 'var(--color-mid-gray-border)', fontSize: 13, fontFamily: 'var(--font-jetbrains)' }}>
+            {shortAddr(bundle.assembler)}
+          </span>
+        </div>
+        <div style={{ textAlign: 'right' }}>
+          <div style={{ fontFamily: 'var(--font-pt-serif)', fontSize: 48, color: 'var(--color-lime-interface)', lineHeight: 1 }}>
+            {(Number(bundle.price_wei) / 1e18).toFixed(2)}
           </div>
-          <div className={styles.priceBlock}>
-            <span className={styles.price}>{totalEth} ETH</span>
-            <span className={styles.priceLabel}>Bundle Price</span>
+          <div className="label" style={{ marginTop: 4 }}>ETH</div>
+        </div>
+      </div>
+
+      {/* Revenue split */}
+      <div className="card" style={{ marginBottom: 20 }}>
+        <div className="label" style={{ marginBottom: 12, color: 'var(--color-lime-interface)' }}>Revenue Split</div>
+        <div style={{ height: 6, background: 'var(--color-dark-grid)', display: 'flex', marginBottom: 12 }}>
+          <div style={{ width: `${assemblerPct}%`, background: 'var(--color-lime-interface)', transition: 'width 0.8s ease' }} />
+          <div style={{ flex: 1, background: 'var(--color-mid-gray-border)' }} />
+        </div>
+        <div style={{ display: 'flex', gap: 32 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <div style={{ width: 8, height: 8, background: 'var(--color-lime-interface)' }} />
+            <span style={{ fontFamily: 'var(--font-jetbrains)', fontSize: 11, color: 'var(--color-white-outlined-text)' }}>Assembler {assemblerPct}%</span>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <div style={{ width: 8, height: 8, background: 'var(--color-mid-gray-border)' }} />
+            <span style={{ fontFamily: 'var(--font-jetbrains)', fontSize: 11, color: 'var(--color-white-outlined-text)' }}>Each strategy {eachPct}%</span>
           </div>
         </div>
+      </div>
 
-        {/* Revenue split visualisation */}
-        <div className={styles.splitCard}>
-          <p className={styles.splitTitle}>Revenue Split</p>
-          <div className={styles.splitBar}>
-            <motion.div
-              className={styles.splitAssembler}
-              style={{ width: `${assemblerPct}%` }}
-              initial={{ width: 0 }}
-              animate={{ width: `${assemblerPct}%` }}
-              transition={{ duration: 0.9, ease: 'easeOut' }}
-            />
-            <motion.div
-              className={styles.splitContribs}
-              style={{ width: `${100 - assemblerPct}%` }}
-              initial={{ width: 0 }}
-              animate={{ width: `${100 - assemblerPct}%` }}
-              transition={{ duration: 0.9, delay: 0.2, ease: 'easeOut' }}
-            />
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 1, background: 'var(--color-dark-grid)', marginBottom: 24 }}>
+        {[
+          ['Strategies included', `${n}`],
+          ['Status', bundle.active ? 'Active' : 'Inactive'],
+        ].map(([k, v]) => (
+          <div key={k} style={{ background: 'var(--surface-dark-card)', padding: '16px 20px' }}>
+            <div className="label" style={{ marginBottom: 8 }}>{k}</div>
+            <div style={{ fontFamily: 'var(--font-jetbrains)', fontSize: 13, color: 'var(--color-white-outlined-text)' }}>{v}</div>
           </div>
-          <div className={styles.splitLegend}>
-            <div className={styles.legendItem}>
-              <span className={styles.dotBlack} />
-              <span>Assembler {assemblerPct}%</span>
-            </div>
-            <div className={styles.legendItem}>
-              <span className={styles.dotGray} />
-              <span>Each strategy {eachPct}%</span>
-            </div>
-          </div>
-        </div>
+        ))}
+      </div>
 
-        <div className={styles.metaRow}>
-          <div className={styles.metaItem}>
-            <span className={styles.metaLabel}>Strategies</span>
-            <span className={styles.metaValue}>{n}</span>
-          </div>
-          <div className={styles.metaItem}>
-            <span className={styles.metaLabel}>Status</span>
-            <span className={`${styles.metaValue} ${bundle.active ? styles.live : ''}`}>
-              {bundle.active ? 'Active' : 'Inactive'}
+      <div className="label" style={{ marginBottom: 14 }}>Included Strategies</div>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(1, 1fr)', gap: 1, background: 'var(--color-dark-grid)' }}>
+        {(USE_MOCK ? strategies : bundle.strategy_ids.map(id => ({ token_id: id }))).map((s) => (
+          <div key={s.token_id} style={{
+            background: 'var(--surface-dark-card)', padding: '14px 20px',
+            display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 80px', gap: 16, alignItems: 'center',
+          }}>
+            <span style={{ fontFamily: 'var(--font-jetbrains)', fontSize: 12, color: 'var(--color-lime-interface)' }}>
+              Strategy #{s.token_id}
             </span>
+            {s.creator && <span style={{ fontFamily: 'var(--font-jetbrains)', fontSize: 11, color: 'var(--color-mid-gray-border)' }}>{s.creator.slice(0,8)}…</span>}
+            {s.latest_score_bps != null && (
+              <span style={{ fontFamily: 'var(--font-pt-serif)', fontSize: 16, color: 'var(--color-white-outlined-text)' }}>
+                {(s.latest_score_bps / 100).toFixed(1)}%
+              </span>
+            )}
+            <Link to={`/strategies/${s.token_id}`} style={{ color: 'var(--color-mid-gray-border)', fontFamily: 'var(--font-jetbrains)', fontSize: 11, textDecoration: 'none', textAlign: 'right' }}>
+              VIEW →
+            </Link>
           </div>
-        </div>
-
-        <h2 className={styles.sectionHead}>Included Strategies</h2>
-        <div className={styles.grid}>
-          {(USE_MOCK ? strategies : bundle.strategy_ids).map((item, i) => {
-            const s = USE_MOCK ? item : null;
-            if (s) return <StrategyCard key={s.token_id} strategy={s} />;
-            return (
-              <Link key={item} to={`/strategies/${item}`} className={styles.stratLink}>
-                Strategy #{item} →
-              </Link>
-            );
-          })}
-        </div>
-      </motion.div>
-    </div>
-  );
+        ))}
+      </div>
+    </main>
+  )
 }

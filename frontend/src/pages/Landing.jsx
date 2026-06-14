@@ -1,255 +1,262 @@
-import { useRef } from 'react';
-import { Link } from 'react-router-dom';
-import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
-import styles from './Landing.module.css';
+import { Link } from 'react-router-dom'
+import { useEffect, useRef, useState } from 'react'
+import { MOCK_LEADERBOARD } from '../lib/mockData'
 
-// Classical painting references from public domain (Wikimedia)
-const PAINTINGS = [
-  { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ec/Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg/402px-Mona_Lisa%2C_by_Leonardo_da_Vinci%2C_from_C2RMF_retouched.jpg', label: 'Momentum Alpha', caption: 'RSI-driven position with slashing guard' },
-  { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Bouguereau-1879-La_Naissance_de_V%C3%A9nus_detail.jpg/440px-Bouguereau-1879-La_Naissance_de_V%C3%A9nus_detail.jpg', label: 'Mean Reversion', caption: 'Bollinger Band reversion on mETH' },
-  { src: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Rembrandt_Harmensz._van_Rijn_-_Zelfportret_-_Google_Art_Project.jpg/436px-Rembrandt_Harmensz._van_Rijn_-_Zelfportret_-_Google_Art_Project.jpg', label: 'Volatility Hedge', caption: 'EigenLayer slashing probability filter' },
-];
+const stats = [
+  { value: '6',     label: 'Active strategies' },
+  { value: '2',     label: 'Live bundles' },
+  { value: '26.8%', label: 'Peak EWA score' },
+  { value: '100%',  label: 'On-chain settlement' },
+]
 
-const STATS = [
-  { label: 'Strategies', value: '6' },
-  { label: 'Bundles', value: '2' },
-  { label: 'Total Creators', value: '6' },
-  { label: 'Peak Score', value: '26.8%' },
-];
+const features = [
+  { tag: 'STRATEGY NFT',   title: 'On-Chain Ownership',         body: 'Every strategy is minted as an ERC-721 with ERC-2981 royalties. The NFT encodes price, royalty terms, fork lineage, and agent identity. Ownership is on-chain, not in a database.' },
+  { tag: 'FORK ROYALTIES', title: 'Perpetual Creator Revenue',  body: 'Fork a strategy, link it on-chain. Every downstream sale routes a configurable royalty slice back to the original creator automatically. No invoices, no negotiation.' },
+  { tag: 'BUNDLE REGISTRY', title: 'Composable Portfolios',     body: 'Assemble any set of strategies into a bundle. Revenue splits 70% to the assembler, 30% divided across constituent strategies. All enforced in Solidity.' },
+  { tag: 'PERFORMANCE ORACLE', title: 'EWA Score On-Chain',     body: 'A reporter submits performance snapshots. The PerformanceOracle computes an Exponentially Weighted Average on-chain. Older snapshots carry higher weight. Scores are public and immutable.' },
+  { tag: 'AGENT REGISTRY', title: 'ERC-8004 Identity',          body: 'Every creator maps to a verified agent identity. Reputation accrues to the agent across all strategies and bundles. No fake accounts. No stolen provenance.' },
+  { tag: 'HASHKEY CHAIN',  title: 'Sub-cent Execution',         body: 'Royalty updates, performance snapshots, and price adjustments happen daily. Ethereum gas ($5+) makes this impossible. HashKey Chain makes it routine.' },
+]
 
-function HeroWordmark() {
+const ticker = [
+  'HASHKEY CHAIN', '·', 'ERC-8004 IDENTITY', '·', 'FORK ROYALTIES', '·',
+  'BUNDLE REGISTRY', '·', 'EWA SCORING', '·', 'ONCHAIN SETTLEMENT', '·',
+  'AGENT ECONOMY', '·', 'MANTLE HACKATHON 2026', '·', 'PERPETUAL YIELD', '·',
+]
+
+const TERMINAL_LINES = [
+  '> living-outcomes query --strategy 4',
+  '  fetching from StrategyNFT...',
+  '  reading PerformanceOracle...',
+  '  creator=0xDave  fork_of=#2',
+  '  price=2.0000 ETH  royalty=6%',
+  '  ewa_score=26.80%  snapshots=6',
+  '  rank=#1 on leaderboard',
+]
+
+function Terminal() {
+  const [lines, setLines] = useState([])
+  const [cursor, setCursor] = useState(0)
+
+  useEffect(() => {
+    if (cursor >= TERMINAL_LINES.length) {
+      const t = setTimeout(() => { setLines([]); setCursor(0) }, 3000)
+      return () => clearTimeout(t)
+    }
+    const delay = cursor === 0 ? 600 : cursor < 2 ? 400 : 700
+    const t = setTimeout(() => {
+      setLines(l => [...l, TERMINAL_LINES[cursor]])
+      setCursor(c => c + 1)
+    }, delay)
+    return () => clearTimeout(t)
+  }, [cursor])
+
   return (
-    <div className={styles.wordmarkWrap} aria-hidden="true">
-      <motion.span
-        className={styles.wordmark}
-        initial={{ opacity: 0, y: 60 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1.2, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
-      >
-        Living Outcomes
-      </motion.span>
+    <div style={{
+      background: '#000', border: '1px solid var(--color-dark-grid)',
+      padding: '16px 20px', fontFamily: 'var(--font-jetbrains)', fontSize: 11,
+      lineHeight: 1.8, minHeight: 160, position: 'relative', overflow: 'hidden',
+    }}>
+      <div style={{ color: 'var(--color-faint-grid)', marginBottom: 8, fontSize: 10, letterSpacing: '0.1em' }}>
+        LIVING OUTCOMES NEXUS v1.0 · HASHKEY TESTNET
+      </div>
+      {lines.map((l, i) => (
+        <div key={i} style={{
+          color: l.includes('ewa_score') || l.includes('rank') ? 'var(--color-lime-interface)'
+               : l.startsWith('  creator') || l.startsWith('  price') ? 'var(--color-white-outlined-text)'
+               : l.startsWith('>') ? '#fff' : 'var(--color-mid-gray-border)',
+          animation: 'fade-up 0.2s ease forwards',
+        }}>{l}</div>
+      ))}
+      {cursor < TERMINAL_LINES.length && (
+        <span style={{ color: 'var(--color-lime-interface)', animation: 'blink 1s step-end infinite' }}>█</span>
+      )}
     </div>
-  );
+  )
 }
 
-function HeroCluster() {
-  return (
-    <motion.div
-      className={styles.cluster}
-      initial={{ opacity: 0, y: -20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-    >
-      <p className={styles.tagline}>
-        AI strategies that improve forever.<br />
-        <em>Every contributor paid, onchain.</em>
-      </p>
-      <div className={styles.statsRow}>
-        {STATS.map(s => (
-          <div key={s.label} className={styles.stat}>
-            <span className={styles.statVal}>{s.value}</span>
-            <span className={styles.statLabel}>{s.label}</span>
-          </div>
-        ))}
-      </div>
-      <Link to="/strategies" className={styles.ctaBtn}>Explore Strategies</Link>
-    </motion.div>
-  );
-}
+function GridCanvas() {
+  const ref = useRef()
+  useEffect(() => {
+    const canvas = ref.current
+    if (!canvas) return
+    const ctx = canvas.getContext('2d')
+    let raf
+    canvas.width = canvas.offsetWidth
+    canvas.height = canvas.offsetHeight
+    const W = canvas.width, H = canvas.height
 
-function FeatureSection() {
-  return (
-    <section className={styles.featureSection}>
-      <motion.h2
-        className={styles.featureHeading}
-        initial={{ opacity: 0, y: 40 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: '-80px' }}
-        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-      >
-        The Gallery
-      </motion.h2>
-      <p className={styles.featureSub}>Three pillars of the living marketplace</p>
-      <div className={styles.vignettesGrid}>
-        {PAINTINGS.map((p, i) => (
-          <motion.div
-            key={p.label}
-            className={styles.vignette}
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-40px' }}
-            transition={{ duration: 0.7, delay: i * 0.15, ease: [0.16, 1, 0.3, 1] }}
-          >
-            <p className={styles.vignetteTitle}>{p.label}</p>
-            <div className={styles.vignetteCircle}>
-              <img src={p.src} alt={p.label} loading="lazy" />
-            </div>
-            <p className={styles.vignetteCaption}>{p.caption}</p>
-            <HexDot />
-          </motion.div>
-        ))}
-      </div>
-    </section>
-  );
-}
+    const dots = Array.from({ length: 60 }, () => ({
+      x: Math.random() * W, y: Math.random() * H,
+      vx: (Math.random() - 0.5) * 0.2, vy: (Math.random() - 0.5) * 0.2,
+      r: Math.random() * 1.2 + 0.3,
+    }))
 
-function HexDot() {
-  return (
-    <svg width="12" height="14" viewBox="0 0 12 14" fill="none" className={styles.hexDot}>
-      <polygon points="6,1 11,3.5 11,8.5 6,11 1,8.5 1,3.5" stroke="currentColor" strokeWidth="1" fill="none"/>
-    </svg>
-  );
-}
+    const draw = () => {
+      ctx.clearRect(0, 0, W, H)
+      ctx.strokeStyle = 'rgba(37,37,37,0.6)'
+      ctx.lineWidth = 0.5
+      for (let x = 0; x < W; x += 60) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke() }
+      for (let y = 0; y < H; y += 60) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke() }
 
-function HowItWorksSection() {
-  const steps = [
-    { n: '01', title: 'Create', body: 'Upload a strategy. Mint an NFT. Set your price and royalty.' },
-    { n: '02', title: 'Improve', body: 'Fork any strategy. Improve it. Original creator earns royalties automatically — forever.' },
-    { n: '03', title: 'Bundle', body: 'Assemble strategies into portfolios. Revenue splits onchain, no negotiation.' },
-    { n: '04', title: 'Perform', body: 'The oracle tracks real performance. Scores update on-chain. Rankings shift.' },
-  ];
+      dots.forEach(d => {
+        d.x += d.vx; d.y += d.vy
+        if (d.x < 0 || d.x > W) d.vx *= -1
+        if (d.y < 0 || d.y > H) d.vy *= -1
+        ctx.beginPath(); ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2)
+        ctx.fillStyle = 'rgba(197,255,74,0.4)'; ctx.fill()
+      })
 
-  return (
-    <section className={styles.howSection}>
-      <motion.h2
-        className={styles.howHeading}
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.8 }}
-      >
-        How It Works
-      </motion.h2>
-      <div className={styles.stepsGrid}>
-        {steps.map((s, i) => (
-          <motion.div
-            key={s.n}
-            className={styles.step}
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: '-40px' }}
-            transition={{ duration: 0.6, delay: i * 0.1 }}
-          >
-            <span className={styles.stepNum}>{s.n}</span>
-            <h3 className={styles.stepTitle}>{s.title}</h3>
-            <p className={styles.stepBody}>{s.body}</p>
-          </motion.div>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function PaintingBanner() {
-  const ref = useRef(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ['start end', 'end start'] });
-  const y = useTransform(scrollYProgress, [0, 1], [-40, 40]);
-
-  return (
-    <section ref={ref} className={styles.paintingBanner} aria-hidden="true">
-      <motion.div className={styles.paintingInner} style={{ y }}>
-        <img
-          src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg/1280px-Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg"
-          alt="The Starry Night"
-          className={styles.paintingImg}
-        />
-      </motion.div>
-      <div className={styles.paintingCard}>
-        <span className={styles.paintingScroll}>SCROLL</span>
-        <p className={styles.paintingCardTitle}>Every strategy<br />a living work</p>
-        <Link to="/leaderboard" className={styles.paintingCta}>View Leaderboard</Link>
-      </div>
-    </section>
-  );
-}
-
-function MarqueeSection() {
-  const items = ['LIVING OUTCOMES', 'ONCHAIN ROYALTIES', 'EVOLVING STRATEGIES', 'PERPETUAL YIELD', 'HASHKEY CHAIN', 'REAL PERFORMANCE', 'AI EXECUTION'];
-  const doubled = [...items, ...items];
-
-  return (
-    <div className={styles.marqueeWrap}>
-      <motion.div
-        className={styles.marqueeTrack}
-        animate={{ x: '-50%' }}
-        transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}
-      >
-        {doubled.map((item, i) => (
-          <span key={i} className={styles.marqueeItem}>
-            {item}
-            <svg width="6" height="6" viewBox="0 0 6 6" className={styles.marqueeDot}>
-              <circle cx="3" cy="3" r="3" fill="currentColor"/>
-            </svg>
-          </span>
-        ))}
-      </motion.div>
-    </div>
-  );
-}
-
-function CtaBanner() {
-  return (
-    <section className={styles.ctaBanner}>
-      <motion.h2
-        className={styles.ctaHeading}
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.8 }}
-      >
-        Your strategy.<br />
-        <em>Alive forever.</em>
-      </motion.h2>
-      <motion.div
-        className={styles.ctaBtns}
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6, delay: 0.3 }}
-      >
-        <Link to="/strategies" className={styles.ctaPrimary}>Browse Strategies</Link>
-        <Link to="/bundles" className={styles.ctaGhost}>Explore Bundles</Link>
-      </motion.div>
-    </section>
-  );
+      dots.forEach((a, i) => dots.slice(i + 1).forEach(b => {
+        const dist = Math.hypot(a.x - b.x, a.y - b.y)
+        if (dist < 100) {
+          ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y)
+          ctx.strokeStyle = `rgba(197,255,74,${0.08 * (1 - dist / 100)})`
+          ctx.lineWidth = 0.5; ctx.stroke()
+        }
+      }))
+      raf = requestAnimationFrame(draw)
+    }
+    draw()
+    return () => cancelAnimationFrame(raf)
+  }, [])
+  return <canvas ref={ref} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none' }} />
 }
 
 export default function Landing() {
+  const top3 = MOCK_LEADERBOARD.slice(0, 3)
+
   return (
-    <main className={styles.main}>
+    <main style={{ maxWidth: 1200, margin: '0 auto', padding: '0 32px' }}>
+      <div className="scanline" />
+
       {/* Hero */}
-      <section className={styles.hero}>
-        <HeroCluster />
-        <HeroWordmark />
+      <section style={{ padding: '80px 0 60px', borderBottom: '1px solid var(--color-dark-grid)', position: 'relative', overflow: 'hidden', minHeight: 480 }}>
+        <GridCanvas />
+        <div style={{ position: 'relative', zIndex: 1 }}>
+          <div style={{ marginBottom: 16 }}>
+            <span className="label">Built on HashKey Chain · Mantle Turing Test Hackathon 2026</span>
+          </div>
+          <h1 style={{ fontFamily: 'var(--font-pt-serif)', fontSize: 72, fontWeight: 400, lineHeight: 1, letterSpacing: '-0.02em', maxWidth: 800, marginBottom: 24 }}>
+            AI strategies that<br />
+            <span className="lime glitch">pay you forever.</span>
+          </h1>
+          <p style={{ color: 'var(--color-white-outlined-text)', fontSize: 16, lineHeight: 1.6, maxWidth: 480, marginBottom: 36 }}>
+            An open protocol where every strategy fork pays the original creator automatically, bundles split revenue among all contributors without negotiation, and real performance is tracked and scored on-chain.
+          </p>
+          <div style={{ display: 'flex', gap: 12, alignItems: 'center', marginBottom: 40 }}>
+            <Link to="/strategies" className="btn-lime pulse">Explore Strategies →</Link>
+            <Link to="/leaderboard" className="btn-ghost">View Leaderboard</Link>
+          </div>
+          <div style={{ maxWidth: 560 }}>
+            <Terminal />
+          </div>
+        </div>
       </section>
 
-      {/* Marquee */}
-      <MarqueeSection />
+      {/* Ticker */}
+      <div className="ticker-wrap">
+        <div className="ticker-inner">
+          {[...ticker, ...ticker].map((t, i) => (
+            <span key={i} style={{ fontFamily: 'var(--font-jetbrains)', fontSize: 10, letterSpacing: '0.12em', color: t === '·' ? 'var(--color-faint-grid)' : 'var(--color-mid-gray-border)' }}>{t}</span>
+          ))}
+        </div>
+      </div>
 
-      {/* Feature Gallery */}
-      <FeatureSection />
+      {/* Stats */}
+      <section style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', borderBottom: '1px solid var(--color-dark-grid)' }}>
+        {stats.map(({ value, label }, i) => (
+          <div key={i} className="fade-up" style={{ padding: '28px 22px', borderRight: i < 3 ? '1px solid var(--color-dark-grid)' : 'none' }}>
+            <div style={{ fontFamily: 'var(--font-pt-serif)', fontSize: 40, fontWeight: 400, color: 'var(--color-lime-interface)', lineHeight: 1 }}>{value}</div>
+            <div className="label" style={{ marginTop: 8 }}>{label}</div>
+          </div>
+        ))}
+      </section>
 
-      {/* Painting + product card */}
-      <PaintingBanner />
+      {/* How it works comparison */}
+      <section style={{ padding: '40px 0', borderBottom: '1px solid var(--color-dark-grid)' }}>
+        <div className="label" style={{ marginBottom: 16 }}>Why Living Outcomes</div>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 1, background: 'var(--color-dark-grid)' }}>
+          {[
+            { metric: 'Creator revenue',   us: 'Perpetual royalties', them: 'One-time sale' },
+            { metric: 'Fork attribution',  us: 'On-chain lineage',    them: 'No record' },
+            { metric: 'Performance truth', us: 'EWA oracle on-chain', them: 'Self-reported APY' },
+            { metric: 'Bundle revenue',    us: 'Auto-split in Solidity', them: 'Manual negotiation' },
+            { metric: 'Agent identity',    us: 'ERC-8004 verified',   them: 'API key or username' },
+            { metric: 'Settlement',        us: 'Sub-cent on HashKey', them: 'Off-chain or $5+ gas' },
+          ].map(({ metric, us, them }, i) => (
+            <div key={i} className="fade-up card-trace" style={{ padding: '16px 22px', display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10, alignItems: 'center' }}>
+              <span style={{ color: 'var(--color-mid-gray-border)', fontSize: 12 }}>{metric}</span>
+              <span style={{ color: 'var(--color-lime-interface)', fontFamily: 'var(--font-jetbrains)', fontSize: 12 }}>{us}</span>
+              <span style={{ color: 'var(--color-faint-grid)', fontFamily: 'var(--font-jetbrains)', fontSize: 12, textDecoration: 'line-through' }}>{them}</span>
+            </div>
+          ))}
+        </div>
+      </section>
 
-      {/* How it works */}
-      <HowItWorksSection />
+      {/* Live leaderboard preview */}
+      <section style={{ padding: '40px 0', borderBottom: '1px solid var(--color-dark-grid)' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+          <div className="label">Live Leaderboard Preview</div>
+          <Link to="/leaderboard" style={{ color: 'var(--color-lime-interface)', fontFamily: 'var(--font-jetbrains)', fontSize: 11, textDecoration: 'none', letterSpacing: '0.06em' }}>
+            VIEW ALL →
+          </Link>
+        </div>
+        <div style={{ border: '1px solid var(--color-dark-grid)' }}>
+          {top3.map((entry, i) => (
+            <div key={entry.strategy.token_id} className="fade-up" style={{
+              display: 'grid', gridTemplateColumns: '40px 1fr 120px 100px 80px',
+              gap: 16, padding: '14px 20px', alignItems: 'center',
+              borderBottom: i < 2 ? '1px solid var(--color-dark-grid)' : 'none',
+            }}>
+              <span style={{ fontFamily: 'var(--font-jetbrains)', fontSize: 13, color: 'var(--color-mid-gray-border)' }}>#{entry.rank}</span>
+              <div>
+                <div style={{ fontFamily: 'var(--font-jetbrains)', fontSize: 11, color: 'var(--color-white-outlined-text)' }}>
+                  Strategy #{entry.strategy.token_id}
+                </div>
+                <div style={{ fontFamily: 'var(--font-jetbrains)', fontSize: 10, color: 'var(--color-mid-gray-border)', marginTop: 2 }}>
+                  {entry.strategy.creator.slice(0, 8)}…{entry.strategy.creator.slice(-4)}
+                </div>
+              </div>
+              <div style={{ height: 2, background: 'var(--color-dark-grid)', position: 'relative' }}>
+                <div style={{ position: 'absolute', left: 0, top: 0, height: '100%', width: `${Math.min(entry.score_bps / 30, 100)}%`, background: 'var(--color-lime-interface)' }} />
+              </div>
+              <span style={{ fontFamily: 'var(--font-pt-serif)', fontSize: 18, color: 'var(--color-lime-interface)' }}>
+                {(entry.score_bps / 100).toFixed(1)}%
+              </span>
+              <Link to={`/strategies/${entry.strategy.token_id}`} style={{ color: 'var(--color-mid-gray-border)', fontFamily: 'var(--font-jetbrains)', fontSize: 11, textDecoration: 'none', textAlign: 'right' }}>
+                VIEW →
+              </Link>
+            </div>
+          ))}
+        </div>
+      </section>
 
-      {/* CTA */}
-      <CtaBanner />
+      {/* Core architecture features */}
+      <section style={{ padding: '40px 0 60px' }}>
+        <div className="label" style={{ marginBottom: 28 }}>Core Architecture</div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 1, background: 'var(--color-dark-grid)' }}>
+          {features.map(({ tag, title, body }, i) => (
+            <div key={i} className="card card-trace fade-up">
+              <div className="label" style={{ color: 'var(--color-lime-interface)', marginBottom: 12 }}>{tag}</div>
+              <div style={{ fontFamily: 'var(--font-pt-serif)', fontSize: 22, fontWeight: 400, lineHeight: 1.15, marginBottom: 12 }}>{title}</div>
+              <div style={{ color: 'var(--color-mid-gray-border)', fontSize: 13, lineHeight: 1.6 }}>{body}</div>
+            </div>
+          ))}
+        </div>
+      </section>
 
       {/* Footer */}
-      <footer className={styles.footer}>
-        <div className={styles.footerInner}>
-          <span className={styles.footerBrand}>Living Outcomes</span>
-          <span className={styles.footerNote}>Built on HashKey Chain · Mantle Turing Test Hackathon 2026</span>
-          <div className={styles.footerLinks}>
-            <Link to="/strategies" className={styles.footerLink}>Strategies</Link>
-            <Link to="/bundles" className={styles.footerLink}>Bundles</Link>
-            <Link to="/leaderboard" className={styles.footerLink}>Leaderboard</Link>
-          </div>
+      <footer style={{ borderTop: '1px solid var(--color-dark-grid)', padding: '24px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <span style={{ fontFamily: 'var(--font-jetbrains)', fontSize: 11, color: 'var(--color-mid-gray-border)', letterSpacing: '0.06em' }}>
+          LIVING OUTCOMES NEXUS · HASHKEY CHAIN · MANTLE 2026
+        </span>
+        <div style={{ display: 'flex', gap: 24 }}>
+          {[['Strategies', '/strategies'], ['Bundles', '/bundles'], ['Leaderboard', '/leaderboard']].map(([label, to]) => (
+            <Link key={to} to={to} style={{ fontFamily: 'var(--font-inter-tight)', fontSize: 12, color: 'var(--color-mid-gray-border)', textDecoration: 'none' }}>{label}</Link>
+          ))}
         </div>
       </footer>
     </main>
-  );
+  )
 }
