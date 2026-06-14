@@ -301,11 +301,6 @@ Set `VITE_USE_MOCK=false` and set `VITE_API_URL` to connect to a running backend
 
 ---
 
-## Frontend Design
-
-The interface uses a Renaissance gallery aesthetic: warm putty-beige canvas, stark black sections, classical painting imagery, and serif display typography up to 280px. Animations are data-driven: score bars animate on scroll, performance charts draw in on load, leaderboard rows cascade with staggered delays.
-
-No gradients. No shadows. No modern stock imagery. Visual depth comes entirely from alternating light and dark full-bleed sections.
 
 ---
 
